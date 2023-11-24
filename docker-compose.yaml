@@ -36,8 +36,9 @@ services:
       context: $DOCKER_ROOT/php56
     volumes:
       - ./src/:/var/www/html/
-      - $DOCKER_ROOT/php/ini/10-opcache.ini:/usr/local/etc/php/conf.d/10-opcache.ini
-      - $DOCKER_ROOT/php/ini/20-xdebug.ini:/usr/local/etc/php/conf.d/20-xdebug.ini
+      - $DOCKER_ROOT/php56/ini/php.ini:/usr/local/etc/php/conf.d/php.ini
+      - $DOCKER_ROOT/php56/ini/10-opcache.ini:/usr/local/etc/php/conf.d/10-opcache.ini
+      - $DOCKER_ROOT/php56/ini/20-xdebug.ini:/usr/local/etc/php/conf.d/20-xdebug.ini
     extra_hosts:
       #Для Windows
       #- "host.docker.internal:host-gateway"
@@ -70,6 +71,20 @@ services:
       timeout: 5s
       retries: 5
 
+  mysql:
+      image: mysql:5.7
+      restart: always
+      environment:
+        MYSQL_DATABASE: ${PROJECT_NAME}
+        MYSQL_USER: 'user'
+        MYSQL_PASSWORD: 'password'
+        MYSQL_ROOT_PASSWORD: 'password'
+      ports:
+        - '3306:3306'
+      expose:
+        - '3306'
+      volumes:
+        - mysql-data:/var/lib/mysql
 networks:
   apmg:
     driver: bridge
@@ -77,3 +92,4 @@ networks:
 
 volumes:
   postgres-data:
+  mysql-data:
